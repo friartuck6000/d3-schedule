@@ -4,6 +4,20 @@
     <meta charset="UTF-8" />
     <title>D3</title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all" />
+    <style type="text/css" media="all">
+    .schedule-item {
+      padding: 18px;
+    }
+    .asmbs {
+      background: rgba(0,84,166,0.1);
+    }
+    .tos {
+      background: rgba(123,37,137,0.1);
+    }
+    .both {
+      background:rgba(124,150,64,0.1);
+    }
+    </style>
     <script src="//d3js.org/d3.v3.min.js" type="text/javascript"></script>
   </head>
   <body>
@@ -14,6 +28,68 @@
           <hr />
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-12">
+        <div id="main"></div>
+        </div>
+      </div>
     </div>
+    <script type="text/javascript">
+      (function(d3){
+        var data = {
+          start: 800,
+          end: 1500,
+          items: [
+            {
+              title: 'Course One',
+              society: 'asmbs',
+              start: 800,
+              end: 1200
+            },
+            {
+              title: 'Lunch',
+              start: 1200,
+              end: 1300
+            },
+            {
+              title: 'Course Two',
+              society: 'tos',
+              start: 1300,
+              end: 1500
+            }
+          ]
+        };
+
+        var steps = (data.end - data.start) / 100;
+        var single = 1 / steps;
+
+        var main = d3.select('#main');
+        var items = main.selectAll('p')
+          .data(data.items);
+
+        items.enter()
+          .append('div')
+          .classed('schedule-item', true)
+          .attr('class', function(d) {
+            var c = d3.select(this).attr('class');
+            if (!d.society)
+              return c +' both';
+            else
+              return c +' '+ d.society;
+          })
+          .style('margin-left', function(d) {
+            var offset = d.start - data.start;
+            return (offset * single) + '%';
+          })
+          .style('margin-right', function(d) {
+            var offset = data.end - d.end;
+            return (offset * single) + '%';
+          })
+          .html(function(d) {
+            return '<strong>'+ d.title +'</strong><br />'+ d.start +' &ndash; '+ d.end;
+          });
+
+      })(d3);
+    </script>
   </body>
 </html>
